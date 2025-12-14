@@ -81,15 +81,28 @@ export default function KanbanBoard() {
       return Date.now();
     }
 
-    if (overIndex === 0) {
-      // 첫 번째 위치에 드롭
-      return filteredTasks[0].order - 1000;
-    }
+    // 드래그 방향 확인 (원본 리스트에서의 인덱스 비교)
+    const activeIndex = columnTasks.findIndex((t) => t.id === activeTaskId);
+    const originalOverIndex = columnTasks.findIndex((t) => t.id === overTaskId);
+    const isDraggingDown = activeIndex !== -1 && activeIndex < originalOverIndex;
 
-    // 중간에 드롭 - 이전 태스크와 현재 위치 태스크 사이의 중간값
-    const prevOrder = filteredTasks[overIndex - 1].order;
-    const currentOrder = filteredTasks[overIndex].order;
-    return (prevOrder + currentOrder) / 2;
+    if (isDraggingDown) {
+      // 위에서 아래로 드래그: over 태스크 뒤에 배치
+      if (overIndex === filteredTasks.length - 1) {
+        return filteredTasks[overIndex].order + 1000;
+      }
+      const currentOrder = filteredTasks[overIndex].order;
+      const nextOrder = filteredTasks[overIndex + 1].order;
+      return (currentOrder + nextOrder) / 2;
+    } else {
+      // 아래에서 위로 드래그: over 태스크 앞에 배치
+      if (overIndex === 0) {
+        return filteredTasks[0].order - 1000;
+      }
+      const prevOrder = filteredTasks[overIndex - 1].order;
+      const currentOrder = filteredTasks[overIndex].order;
+      return (prevOrder + currentOrder) / 2;
+    }
   };
 
   const onDragEnd = (event: DragEndEvent) => {
