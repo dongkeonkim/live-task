@@ -17,44 +17,44 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-        private final UserRepository userRepository;
-        private final PasswordEncoder passwordEncoder;
-        private final JwtTokenProvider jwtTokenProvider;
-        private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
-        public AuthenticationResponse register(RegisterRequest request) {
-                if (userRepository.existsByEmail(request.getEmail())) {
-                        throw new EmailAlreadyExistsException("이미 존재하는 이메일입니다.");
-                }
-
-                var user = User.builder()
-                                .name(request.getName())
-                                .email(request.getEmail())
-                                .password(passwordEncoder.encode(request.getPassword()))
-                                .build();
-
-                userRepository.save(user);
-
-                var jwtToken = jwtTokenProvider.generateToken(user);
-                return AuthenticationResponse.builder()
-                                .token(jwtToken)
-                                .username(user.getName())
-                                .build();
+    public AuthenticationResponse register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailAlreadyExistsException("이미 존재하는 이메일입니다.");
         }
 
-        public AuthenticationResponse authenticate(LoginRequest request) {
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                request.getEmail(),
-                                                request.getPassword()));
+        var user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
 
-                var user = userRepository.findByEmail(request.getEmail())
-                                .orElseThrow();
+        userRepository.save(user);
 
-                var jwtToken = jwtTokenProvider.generateToken(user);
-                return AuthenticationResponse.builder()
-                                .token(jwtToken)
-                                .username(user.getName())
-                                .build();
-        }
+        var jwtToken = jwtTokenProvider.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .username(user.getName())
+                .build();
+    }
+
+    public AuthenticationResponse authenticate(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()));
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow();
+
+        var jwtToken = jwtTokenProvider.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .username(user.getName())
+                .build();
+    }
 }

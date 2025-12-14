@@ -30,113 +30,113 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = AuthController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class))
 class AuthControllerTest {
 
-        @Autowired
-        private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-        @Autowired
-        private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        @MockitoBean
-        private AuthService authService;
+    @MockitoBean
+    private AuthService authService;
 
-        @MockitoBean
-        private JwtTokenProvider jwtTokenProvider;
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
 
-        @Test
-        @DisplayName("회원가입 API 성공")
-        @WithMockUser
-        void register_Success() throws Exception {
-                // given
-                RegisterRequest request = RegisterRequest.builder()
-                                .name("테스트사용자")
-                                .email("test@example.com")
-                                .password("password123")
-                                .build();
+    @Test
+    @DisplayName("회원가입 API 성공")
+    @WithMockUser
+    void register_Success() throws Exception {
+        // given
+        RegisterRequest request = RegisterRequest.builder()
+                .name("테스트사용자")
+                .email("test@example.com")
+                .password("password123")
+                .build();
 
-                AuthenticationResponse response = AuthenticationResponse.builder()
-                                .token("jwt-token")
-                                .username("테스트사용자")
-                                .build();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("jwt-token")
+                .username("테스트사용자")
+                .build();
 
-                when(authService.register(any(RegisterRequest.class))).thenReturn(response);
+        when(authService.register(any(RegisterRequest.class))).thenReturn(response);
 
-                // when & then
-                mockMvc.perform(post("/api/auth/register")
-                                .with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.token").value("jwt-token"))
-                                .andExpect(jsonPath("$.username").value("테스트사용자"));
-        }
+        // when & then
+        mockMvc.perform(post("/api/auth/register")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("jwt-token"))
+                .andExpect(jsonPath("$.username").value("테스트사용자"));
+    }
 
-        @Test
-        @DisplayName("회원가입 API 실패 - 이메일 중복")
-        @WithMockUser
-        void register_Fail_EmailExists() throws Exception {
-                // given
-                RegisterRequest request = RegisterRequest.builder()
-                                .name("테스트사용자")
-                                .email("test@example.com")
-                                .password("password123")
-                                .build();
+    @Test
+    @DisplayName("회원가입 API 실패 - 이메일 중복")
+    @WithMockUser
+    void register_Fail_EmailExists() throws Exception {
+        // given
+        RegisterRequest request = RegisterRequest.builder()
+                .name("테스트사용자")
+                .email("test@example.com")
+                .password("password123")
+                .build();
 
-                when(authService.register(any(RegisterRequest.class)))
-                                .thenThrow(new EmailAlreadyExistsException("이미 존재하는 이메일입니다."));
+        when(authService.register(any(RegisterRequest.class)))
+                .thenThrow(new EmailAlreadyExistsException("이미 존재하는 이메일입니다."));
 
-                // when & then
-                mockMvc.perform(post("/api/auth/register")
-                                .with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().is4xxClientError());
-        }
+        // when & then
+        mockMvc.perform(post("/api/auth/register")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
+    }
 
-        @Test
-        @DisplayName("로그인 API 성공")
-        @WithMockUser
-        void login_Success() throws Exception {
-                // given
-                LoginRequest request = LoginRequest.builder()
-                                .email("test@example.com")
-                                .password("password123")
-                                .build();
+    @Test
+    @DisplayName("로그인 API 성공")
+    @WithMockUser
+    void login_Success() throws Exception {
+        // given
+        LoginRequest request = LoginRequest.builder()
+                .email("test@example.com")
+                .password("password123")
+                .build();
 
-                AuthenticationResponse response = AuthenticationResponse.builder()
-                                .token("jwt-token")
-                                .username("테스트사용자")
-                                .build();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("jwt-token")
+                .username("테스트사용자")
+                .build();
 
-                when(authService.authenticate(any(LoginRequest.class))).thenReturn(response);
+        when(authService.authenticate(any(LoginRequest.class))).thenReturn(response);
 
-                // when & then
-                mockMvc.perform(post("/api/auth/login")
-                                .with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.token").value("jwt-token"))
-                                .andExpect(jsonPath("$.username").value("테스트사용자"));
-        }
+        // when & then
+        mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("jwt-token"))
+                .andExpect(jsonPath("$.username").value("테스트사용자"));
+    }
 
-        @Test
-        @DisplayName("로그인 API 실패 - 인증 실패")
-        @WithMockUser
-        void login_Fail_BadCredentials() throws Exception {
-                // given
-                LoginRequest request = LoginRequest.builder()
-                                .email("test@example.com")
-                                .password("wrongpassword")
-                                .build();
+    @Test
+    @DisplayName("로그인 API 실패 - 인증 실패")
+    @WithMockUser
+    void login_Fail_BadCredentials() throws Exception {
+        // given
+        LoginRequest request = LoginRequest.builder()
+                .email("test@example.com")
+                .password("wrongpassword")
+                .build();
 
-                when(authService.authenticate(any(LoginRequest.class)))
-                                .thenThrow(new BadCredentialsException("잘못된 인증 정보입니다."));
+        when(authService.authenticate(any(LoginRequest.class)))
+                .thenThrow(new BadCredentialsException("잘못된 인증 정보입니다."));
 
-                // when & then
-                mockMvc.perform(post("/api/auth/login")
-                                .with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().is4xxClientError());
-        }
+        // when & then
+        mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
+    }
 }
