@@ -17,9 +17,9 @@ interface TaskState {
   deleteTask: (id: number) => Promise<void>;
   moveTask: (
     activeId: number,
-    overId: number,
-    newStatus: TaskStatus
-  ) => Promise<void>; // Optimistic update support
+    newStatus: TaskStatus,
+    newOrder: number
+  ) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -73,13 +73,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  moveTask: async (activeId, _overId, newStatus) => {
-    // This is a simplified move. Complex reordering usually involves calculating new indices.
-    // For this MVP, we just update the status. If we implemented full reordering, we'd need to update 'order' field too.
-    // Let's assume for now we just change status.
+  moveTask: async (activeId, newStatus, newOrder) => {
     const task = get().tasks.find((t) => t.id === activeId);
-    if (task && task.status !== newStatus) {
-      await get().updateTask(activeId, { status: newStatus });
+    if (task) {
+      await get().updateTask(activeId, { status: newStatus, order: newOrder });
     }
   },
 }));
