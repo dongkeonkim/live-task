@@ -1,14 +1,20 @@
+import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task } from '../../types';
 import { cn } from '../../lib/utils';
-import { GripVertical } from 'lucide-react';
+import { GripVertical, Pencil, Trash2 } from 'lucide-react';
+import { useTaskStore } from '../../store/taskStore';
+import EditTaskModal from './EditTaskModal';
 
 interface TaskCardProps {
   task: Task;
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
+
   const {
     attributes,
     listeners,
@@ -27,6 +33,22 @@ export default function TaskCard({ task }: TaskCardProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      try {
+        await deleteTask(task.id);
+      } catch {
+        alert('삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditModalOpen(true);
   };
 
   if (isDragging) {
@@ -51,12 +73,28 @@ export default function TaskCard({ task }: TaskCardProps) {
       )}
     >
       <div className='flex justify-between items-start'>
-        <h3 className='font-semibold text-slate-200 line-clamp-2'>
+        <h3 className='font-semibold text-slate-200 line-clamp-2 flex-1'>
           {task.title}
         </h3>
-        <button className='text-slate-600 hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab'>
-          <GripVertical size={16} />
-        </button>
+        <div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
+          <button
+            onClick={handleEdit}
+            className='p-1 text-slate-500 hover:text-blue-400 transition-colors'
+            title='수정'
+          >
+            <Pencil size={14} />
+          </button>
+          <button
+            onClick={handleDelete}
+            className='p-1 text-slate-500 hover:text-red-400 transition-colors'
+            title='삭제'
+          >
+            <Trash2 size={14} />
+          </button>
+          <button className='p-1 text-slate-500 hover:text-slate-300 cursor-grab'>
+            <GripVertical size={14} />
+          </button>
+        </div>
       </div>
 
       {task.description && (
@@ -71,6 +109,12 @@ export default function TaskCard({ task }: TaskCardProps) {
         </span>
         <span>{new Date(task.createdAt).toLocaleDateString()}</span>
       </div>
+
+      <EditTaskModal
+        task={task}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
     </div>
   );
 }
