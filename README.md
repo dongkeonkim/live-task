@@ -3,6 +3,7 @@
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-7F52FF?style=for-the-badge&logo=kotlin)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-brightgreen?style=for-the-badge&logo=springboot)
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=for-the-badge&logo=typescript)
@@ -57,7 +58,7 @@ Live Task는 팀과 개인의 업무 효율성을 높이기 위해 개발된 칸
 
 <h2 id="tech-stack">🛠 기술 스택</h2>
 
-### Backend
+### Backend (Java)
 
 | 기술                  | 버전  | 설명                           |
 | --------------------- | ----- | ------------------------------ |
@@ -68,6 +69,19 @@ Live Task는 팀과 개인의 업무 효율성을 높이기 위해 개발된 칸
 | **PostgreSQL**        | 15    | 메인 데이터베이스              |
 | **Lombok**            | -     | 보일러플레이트 코드 감소       |
 | **SpringDoc OpenAPI** | 2.7.0 | Swagger UI 자동 생성           |
+
+### Backend (Kotlin)
+
+| 기술                  | 버전  | 설명                           |
+| --------------------- | ----- | ------------------------------ |
+| **Kotlin**            | 2.1.0 | 최신 Kotlin 버전               |
+| **Spring Boot**       | 3.5.0 | 최신 안정 버전                 |
+| **Spring Security**   | 6.x   | JWT 기반 인증/인가             |
+| **Spring Data JPA**   | 3.x   | ORM 및 데이터 접근 계층        |
+| **PostgreSQL**        | 15    | 메인 데이터베이스              |
+| **SpringDoc OpenAPI** | 2.7.0 | Swagger UI 자동 생성           |
+
+> 💡 Java와 Kotlin 백엔드는 동일한 기능을 제공하며, 선호에 따라 선택할 수 있습니다.
 
 ### Frontend
 
@@ -104,12 +118,12 @@ Live Task는 팀과 개인의 업무 효율성을 높이기 위해 개발된 칸
                                  ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Frontend (React + Vite)                      │
-│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐     │
-│  │   Pages   │  │Components │  │   Store   │  │    API    │     │
-│  │  - Login  │  │- KanbanBoard│ │ (Zustand) │  │  (Axios)  │    │
-│  │  - Home   │  │- TaskCard  │  │ - Auth    │  │           │    │
-│  │- Register │  │- Column    │  │ - Tasks   │  │           │    │
-│  └───────────┘  └───────────┘  └───────────┘  └───────────┘     │
+│  ┌───────────┐  ┌─────────────┐  ┌───────────┐  ┌───────────┐   │
+│  │   Pages   │  │Components   │  │   Store   │  │    API    │   │
+│  │  - Login  │  │- KanbanBoard│  │ (Zustand) │  │  (Axios)  │   │
+│  │  - Home   │  │- TaskCard   │  │ - Auth    │  │           │   │
+│  │- Register │  │- Column     │  │ - Tasks   │  │           │   │
+│  └───────────┘  └─────────────┘  └───────────┘  └───────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                                  │ HTTP/REST
                                  ▼
@@ -144,15 +158,10 @@ Live Task는 팀과 개인의 업무 효율성을 높이기 위해 개발된 칸
 
 ```
 live-task/
-├── backend/                          # Spring Boot 백엔드
+├── backend/                          # Spring Boot 백엔드 (Java)
 │   ├── src/main/java/com/example/kanban/
 │   │   ├── config/                   # 설정 클래스
-│   │   │   ├── SecurityConfig.java   # Spring Security 설정
-│   │   │   ├── AppConfig.java        # 앱 설정
-│   │   │   └── OpenApiConfig.java    # Swagger 설정
 │   │   ├── controller/               # REST 컨트롤러
-│   │   │   ├── AuthController.java   # 인증 API
-│   │   │   └── TaskController.java   # 작업 CRUD API
 │   │   ├── dto/                      # 데이터 전송 객체
 │   │   ├── entity/                   # JPA 엔티티
 │   │   ├── exception/                # 예외 처리
@@ -160,29 +169,37 @@ live-task/
 │   │   ├── security/                 # JWT 관련 클래스
 │   │   └── service/                  # 비즈니스 로직
 │   ├── src/test/java/                # 테스트 코드
-│   │   ├── controller/               # 통합 테스트
-│   │   └── service/                  # 단위 테스트
 │   ├── build.gradle                  # Gradle 빌드 설정
-│   └── Dockerfile                    # 백엔드 Docker 이미지
+│   └── Dockerfile
+│
+├── backend-kotlin/                   # Spring Boot 백엔드 (Kotlin)
+│   ├── src/main/kotlin/com/example/kanban/
+│   │   ├── config/                   # 설정 클래스
+│   │   ├── controller/               # REST 컨트롤러
+│   │   ├── dto/                      # 데이터 전송 객체
+│   │   ├── entity/                   # JPA 엔티티
+│   │   ├── exception/                # 예외 처리
+│   │   ├── repository/               # 데이터 접근 계층
+│   │   ├── security/                 # JWT 관련 클래스
+│   │   └── service/                  # 비즈니스 로직
+│   ├── src/test/kotlin/              # 테스트 코드
+│   ├── build.gradle.kts              # Gradle Kotlin DSL 빌드 설정
+│   └── Dockerfile
 │
 ├── frontend/                         # React 프론트엔드
 │   ├── src/
 │   │   ├── components/               # React 컴포넌트
 │   │   │   ├── Board/                # 칸반 보드 관련
-│   │   │   │   ├── KanbanBoard.tsx   # 메인 보드
-│   │   │   │   ├── Column.tsx        # 컬럼 컴포넌트
-│   │   │   │   ├── TaskCard.tsx      # 작업 카드
-│   │   │   │   ├── NewTaskModal.tsx  # 작업 생성 모달
-│   │   │   │   └── EditTaskModal.tsx # 작업 수정 모달
 │   │   │   └── ui/                   # 공통 UI 컴포넌트
 │   │   ├── pages/                    # 페이지 컴포넌트
 │   │   ├── store/                    # Zustand 상태 관리
 │   │   ├── lib/                      # 유틸리티
 │   │   └── types/                    # TypeScript 타입 정의
-│   ├── package.json                  # npm 의존성
-│   └── Dockerfile                    # 프론트엔드 Docker 이미지
+│   ├── package.json
+│   └── Dockerfile
 │
-└── docker-compose.yml                # Docker Compose 설정
+├── docker-compose.yml                # Docker Compose (Java 백엔드)
+└── docker-compose.kotlin.yml         # Docker Compose (Kotlin 백엔드)
 ```
 
 ---
@@ -202,7 +219,11 @@ git clone https://github.com/dongkeonkim/live-task.git
 cd live-task
 
 # 2. Docker Compose로 실행
+# Java 백엔드 사용
 docker compose up -d
+
+# 또는 Kotlin 백엔드 사용
+docker compose -f docker-compose.kotlin.yml up -d
 
 # 3. 브라우저에서 접속
 # Frontend: http://localhost:5173
@@ -212,10 +233,22 @@ docker compose up -d
 
 ### 로컬 개발 환경
 
-#### Backend
+#### Backend (Java)
 
 ```bash
 cd backend
+
+# Gradle로 빌드 및 실행
+./gradlew bootRun
+
+# 테스트 실행
+./gradlew test
+```
+
+#### Backend (Kotlin)
+
+```bash
+cd backend-kotlin
 
 # Gradle로 빌드 및 실행
 ./gradlew bootRun
@@ -268,8 +301,12 @@ npm run build
 ### 테스트 커버리지
 
 ```bash
-# 백엔드 테스트 실행
+# Java 백엔드 테스트 실행
 cd backend
+./gradlew test
+
+# Kotlin 백엔드 테스트 실행
+cd backend-kotlin
 ./gradlew test
 ```
 
@@ -277,6 +314,7 @@ cd backend
 
 - **단위 테스트**: AuthService, TaskService
 - **통합 테스트**: AuthController, TaskController (MockMvc 사용)
+- **Kotlin 테스트**: mockito-kotlin 라이브러리 사용
 
 ---
 
