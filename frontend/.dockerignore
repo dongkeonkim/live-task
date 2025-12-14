@@ -1,0 +1,6 @@
+node_modules
+node_modules_backup
+dist
+.idea
+.DS_Store
+.env.local
