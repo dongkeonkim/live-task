@@ -10,6 +10,22 @@ export interface Task {
   createdAt: string;
 }
 
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  username: string;
+}
+
 export interface CreateTaskRequest {
   title: string;
   description?: string;

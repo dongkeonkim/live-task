@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useTaskStore } from '../../store/taskStore';
+import type { CreateTaskRequest } from '../../types';
 
 interface NewTaskModalProps {
   isOpen: boolean;
@@ -15,18 +16,17 @@ export default function NewTaskModal({ isOpen, onClose }: NewTaskModalProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<CreateTaskRequest>();
   const createTask = useTaskStore((state) => state.createTask);
 
   if (!isOpen) return null;
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: CreateTaskRequest) => {
     try {
       await createTask(data);
       reset();
       onClose();
-    } catch (error) {
-      console.error(error);
+    } catch {
       alert('작업 생성에 실패했습니다');
     }
   };

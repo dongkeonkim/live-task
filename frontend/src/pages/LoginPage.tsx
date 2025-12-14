@@ -6,25 +6,25 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import api from '../lib/api';
 import { useAuthStore } from '../store/authStore';
+import type { LoginFormData, AuthResponse } from '../types';
 
 export default function LoginPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<LoginFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const res = await api.post('/api/auth/login', data);
+      const res = await api.post<AuthResponse>('/api/auth/login', data);
       setAuth(res.data.token, res.data.username);
       navigate('/');
-    } catch (error) {
-      console.error(error);
+    } catch {
       alert('로그인에 실패했습니다. 인증 정보를 확인해주세요.');
     } finally {
       setIsLoading(false);

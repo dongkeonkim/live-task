@@ -6,25 +6,25 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import api from '../lib/api';
 import { useAuthStore } from '../store/authStore';
+import type { RegisterFormData, AuthResponse } from '../types';
 
 export default function RegisterPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<RegisterFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      const res = await api.post('/api/auth/register', data);
+      const res = await api.post<AuthResponse>('/api/auth/register', data);
       setAuth(res.data.token, res.data.username);
       navigate('/');
-    } catch (error) {
-      console.error(error);
+    } catch {
       alert('회원가입에 실패했습니다. 이미 사용 중인 이메일일 수 있습니다.');
     } finally {
       setIsLoading(false);
